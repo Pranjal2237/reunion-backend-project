@@ -17,7 +17,11 @@ const UserSchema=new mongoose.Schema({
         required:[true,"Password is required"],
         min:[12,"Password must be larger than 8 characters"]
     },
-    friends:{
+    followers:{
+        type:Array,
+        default:[]
+    },
+    following:{
         type:Array,
         default:[]
     }
