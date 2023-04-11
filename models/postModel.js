@@ -18,6 +18,10 @@ const PostSchema=new mongoose.Schema({
         type:Map,
         of:Boolean
     },
+    unlikes:{
+        type:Map,
+        of:Boolean
+    },
     comments:{
         type:Array,
         default:[]
