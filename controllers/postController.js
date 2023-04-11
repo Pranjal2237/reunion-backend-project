@@ -104,3 +104,57 @@ exports.unlikePost=async(req,res)=>{
         res.status(404).json({error:err.message});
     }
 }
+
+
+exports.postComment=async(req,res)=>{
+    try{
+        const {id}=req.params;
+        const {comment}=req.body;
+        const post=await Post.findById(id);
+        if(!post)
+        {
+            return res.status(400).json({success:false,message:"Post dose not exist"});
+        }
+        const commentObject={
+            user_id:req.user._id,
+            userName:req.user.name,
+            comment
+        }
+        post.comments.push(commentObject);
+        await post.save();
+        const resComment=post.comments[post.comments.length-1];
+        res.status(201).json({success:true,resComment});
+    }catch(err){
+        res.status(404).json({error:err.message});
+    }
+}
+
+
+exports.getPost=async(req,res)=>{
+    try{
+        const {id}=req.params;
+        const post= await Post.findById(id);
+        if(!post)
+        {
+            return res.status(400).json({message:"Post dose not exist"});
+        }
+        res.status(200).json({success:true,post,likesNumber:post.likes.size,unlikeNumber:post.unlikes.size,commentsNumber:post.comments.length});
+    }catch(err){
+        res.status(404).json({error:err.message})
+    }
+}
+
+
+exports.getAllPosts=async(req,res)=>{
+    try{
+        const posts=await Post.find({userId:req.user._id});
+        if(!posts)
+        {
+            return res.status(400).json({message:`No Post is created by the user ${req.user.name}`})
+        }
+        const sortedPosts=posts.sort((p1,p2)=>(p1.createdAt > p2.createdAt) ? 1 : (p1.createdAt < p2.createdAt) ? -1 : 0)
+        res.status(200).json({success:true,sortedPosts})
+    }catch(err){
+        res.status(404).json({error:err.message})
+    }
+}
