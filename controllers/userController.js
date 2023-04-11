@@ -88,3 +88,33 @@ exports.followUser=async(req,res)=>{
         res.status(400).json({error:err.message});
     }
 }
+
+
+exports.unfollowUser=async(req,res)=>{
+    try{
+        const {id}=req.params;
+        const user=await User.findById(id);
+        if(!user)
+        {
+            return res.status(404).json({success:false,message:"User dose not exist"});
+        }
+        const loginUser=await User.findById(req.user._id);
+        const checkFollowing=loginUser.following.filter((item)=>{return item._id.toString()===id.toString()})
+        if(checkFollowing==0)
+        {
+            return res.status(200).json({message:`Currently not following the user ${user.name}`})
+        }
+        else
+        {
+            const removeFollowing=loginUser.following.filter((item)=>{return item._id.toString()!==id.toString()})
+            loginUser.following=[...removeFollowing];
+            await loginUser.save();
+            const removeFollower=user.followers.filter((item)=>{return item._id.toString()!==req.user._id.toString()})
+            user.followers=[...removeFollower];
+            await user.save();
+            res.status(201).json({success:true,message:`Successfully unfollowed the user ${user.name}`})
+        }
+    }catch(err){
+        res.status(400).json({error:err.message})
+    }
+}
