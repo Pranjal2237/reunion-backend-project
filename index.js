@@ -20,8 +20,10 @@ app.use(cookieParser());
 app.use(cors({credentials:true}));
 
 const user=require("./routes/userRoute")
+const post=require("./routes/postRoute")
 
 app.use("/api",user);
+app.use("/api",post);
 
 const PORT=process.env.PORT||6000
 
