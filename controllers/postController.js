@@ -147,12 +147,14 @@ exports.getPost=async(req,res)=>{
 
 exports.getAllPosts=async(req,res)=>{
     try{
+        //const user=await User.findById(req.user._id);
+        //console.log(user);
         const posts=await Post.find({userId:req.user._id});
         if(!posts)
         {
-            return res.status(400).json({message:`No Post is created by the user ${req.user.name}`})
+            return res.status(400).json({success:false,message:`No Post is created by the user ${req.user.name}`});
         }
-        const sortedPosts=posts.sort((p1,p2)=>(p1.createdAt > p2.createdAt) ? 1 : (p1.createdAt < p2.createdAt) ? -1 : 0)
+        const sortedPosts=posts.sort((p1,p2)=>(p1.createdAt > p2.createdAt) ? -1 : (p1.createdAt < p2.createdAt) ? 1 : 0)
         res.status(200).json({success:true,sortedPosts})
     }catch(err){
         res.status(404).json({error:err.message})

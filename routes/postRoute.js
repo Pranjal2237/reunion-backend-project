@@ -14,7 +14,7 @@ router.post("/unlike/:id",userAuthenticate,unlikePost);
 
 router.get("/posts/:id",userAuthenticate,getPost);
 
-router.get("/allposts",userAuthenticate,getAllPosts);
+router.post("/all_posts",userAuthenticate,getAllPosts);
 
 router.post("/comment/:id",userAuthenticate,postComment);
 
